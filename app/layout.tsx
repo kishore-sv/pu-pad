@@ -118,6 +118,31 @@ export default function RootLayout({
           <TooltipProvider>{children}</TooltipProvider>
           <Toaster />
         </ThemeProvider>
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              "name": siteConfig.name,
+              "description": siteConfig.description,
+              "url": siteConfig.url,
+              "applicationCategory": "BusinessApplication",
+              "operatingSystem": "All",
+              "author": {
+                "@type": "Person",
+                "name": siteConfig.author,
+                "url": "https://kishore-sv.me"
+              },
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+              }
+            })
+          }}
+        />
       </body>
     </html>
   );
