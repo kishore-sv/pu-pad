@@ -118,6 +118,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" />
         <link rel="manifest" href="/site.webmanifest" />
+        <meta name="google-site-verification" content="jCZEMBZli1xqreUKnEgoNvrmaQ2RnHp56pSpl_bbPo4" />
       </head>
       <body
         className={cn(
