@@ -6,7 +6,6 @@ import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Calendar } from "@/components/ui/calendar";
 
@@ -202,7 +201,7 @@ export function SettingsMode({
                   />
                   <Button
                     size="sm"
-                    className="self-start"
+                    className="self-start cursor-pointer"
                     onClick={handleSelfDestructSave}
                     disabled={!pad || !selfDestructDate}
                   >
@@ -256,6 +255,7 @@ export function SettingsMode({
             <div className="flex flex-wrap gap-2">
               <Button
                 size="sm"
+                className="cursor-pointer"
                 variant="outline"
                 onClick={handleRefreshRevisions}
                 disabled={!pad}
@@ -264,6 +264,7 @@ export function SettingsMode({
               </Button>
               <Button
                 size="sm"
+                className="cursor-pointer"
                 variant="outline"
                 onClick={handleClearHistory}
                 disabled={!pad || revisions.length === 0}
@@ -292,6 +293,7 @@ export function SettingsMode({
                   </div>
                   <Button
                     size="xs"
+                    className="cursor-pointer"
                     variant="outline"
                     onClick={() => handleRestoreRevision(rev.id)}
                   >

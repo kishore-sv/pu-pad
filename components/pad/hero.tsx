@@ -67,7 +67,7 @@ export function Hero() {
       </div>
 
       <Button
-        className="w-full"
+        className="w-full cursor-pointer"
         onClick={handleOpen}
         disabled={isPending || !code.trim()}
       >

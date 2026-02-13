@@ -17,6 +17,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { WriteMode } from "./write-mode";
 import { ReadMode } from "./read-mode";
 import { SettingsMode } from "./settings-mode";
+import { ThemeToggle } from "../toggle-theme";
+
 
 type Props = {
   initialPad: PadRecord | null;
@@ -43,7 +45,7 @@ export function PadShell({
   const [wordCount, setWordCount] = useState<number>(initialPad?.wordCount ?? 0);
   const [savingState, setSavingState] = useState<SavingState>("idle");
   const [isInitializing, setIsInitializing] = useState(false);
-  const [lineNumbers, setLineNumbers] = useState<boolean>(true);
+  const [lineNumbers, setLineNumbers] = useState<boolean>(false);
   const [revisions, setRevisions] = useState<RevisionRecord[]>([]);
   const [lastSavedAt, setLastSavedAt] = useState<string | null>(
     initialPad?.updatedAt ?? null
@@ -314,9 +316,9 @@ export function PadShell({
           className="flex-1"
         >
           <TabsList>
-            <TabsTrigger value="write">Write</TabsTrigger>
-            <TabsTrigger value="read">Read</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
+            <TabsTrigger value="write" className="cursor-pointer">Write</TabsTrigger>
+            <TabsTrigger value="read" className="cursor-pointer">Read</TabsTrigger>
+            <TabsTrigger value="settings" className="cursor-pointer">Settings</TabsTrigger>
           </TabsList>
           <TabsContent value="write" className="h-full">
             <WriteMode
@@ -346,7 +348,7 @@ export function PadShell({
 
       <div className="bg-background/95 fixed inset-x-0 bottom-0 border-t">
         <div className="mx-auto flex max-w-4xl items-center justify-between gap-2 px-4 py-2">
-          <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+          <div className="flex flex-col md:flex-row items-center gap-2 text-[11px] text-muted-foreground">
             {lastSavedAt && (
               <span>
                 Last saved at{" "}
@@ -357,10 +359,12 @@ export function PadShell({
                 })}
               </span>
             )}
+            <ThemeToggle />
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Button
               size="sm"
+              className="cursor-pointer"
               variant="outline"
               disabled={savingState === "saving" || !pad}
               onClick={() => {
@@ -374,16 +378,18 @@ export function PadShell({
             </Button>
             <Button
               size="sm"
+              className="cursor-pointer"
               disabled={savingState === "saving" || !pad}
               onClick={() => save(content, { isAuto: false })}
             >
               Save
-              <span className="ml-2 text-[10px] text-muted-foreground">
+              <span className="ml-2 text-[10px] text-muted">
                 ⌘S / Ctrl+S
               </span>
             </Button>
             <Button
               size="sm"
+              className="cursor-pointer"
               variant="ghost"
               disabled={savingState === "saving"}
               onClick={() => window.location.reload()}
@@ -395,6 +401,7 @@ export function PadShell({
             </Button>
             <Button
               size="sm"
+              className="cursor-pointer"
               variant="ghost"
               onClick={() => {
                 window.location.href = "/";

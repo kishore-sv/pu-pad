@@ -95,7 +95,7 @@ export default function PadPage() {
             Something went wrong loading your pad.
           </p>
           <button
-            className="text-sm underline"
+            className="text-sm underline cursor-pointer"
             onClick={() => window.location.reload()}
           >
             Try again
