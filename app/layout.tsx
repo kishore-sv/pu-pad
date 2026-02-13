@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "next-themes";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { siteConfig } from "@/lib/site-config";
 
 const roboto = Roboto({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -107,6 +108,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className={roboto.variable}>
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="manifest" href="/site.webmanifest" />
+      </head>
       <body
         className={cn(
           geistSans.variable,
