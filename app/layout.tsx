@@ -31,14 +31,21 @@ export const metadata: Metadata = {
     "Zero-knowledge encrypted notes using only a single code. No accounts. No tracking. Fully encrypted in your browser.",
 
   keywords: [
+    "pu pad",
+    "PU Pad",
     "encrypted notes",
+    "secure notes app",
     "zero knowledge notes",
-    "secure notepad",
-    "private markdown editor",
     "end to end encrypted notes",
-    "code based notes",
+    "private markdown editor",
+    "no login notes",
+    "self destruct notes",
+    "password protected notes",
+    "anonymous notepad",
+    "secure online notepad",
+    "code protected notes",
+    "private note sharing",
   ],
-
   authors: [
     {
       name: "PU Pad",
