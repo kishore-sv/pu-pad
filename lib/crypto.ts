@@ -74,7 +74,7 @@ export async function deriveAesKeyFromCode(
   return crypto.subtle.deriveKey(
     {
       name: "PBKDF2",
-      salt,
+      salt: salt as any,
       iterations: PBKDF2_ITERATIONS,
       hash: PBKDF2_HASH,
     },
@@ -97,7 +97,7 @@ export async function encryptString(
     await crypto.subtle.encrypt(
       {
         name: AES_GCM,
-        iv,
+        iv: iv as any,
         tagLength: AUTH_TAG_LENGTH_BITS,
       },
       key,
@@ -130,7 +130,7 @@ export async function decryptString(
   const decrypted = await crypto.subtle.decrypt(
     {
       name: AES_GCM,
-      iv,
+      iv: iv as any,
       tagLength: AUTH_TAG_LENGTH_BITS,
     },
     key,

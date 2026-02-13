@@ -22,7 +22,7 @@ export const pads = pgTable(
     selfDestructAt: timestamp("self_destruct_at", {
       withTimezone: true,
       mode: "date",
-    }).default(null),
+    }).default(null as any),
     createdAt: timestamp("created_at", {
       withTimezone: true,
       mode: "date",
