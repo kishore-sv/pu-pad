@@ -96,7 +96,7 @@ export function Hero() {
         lose the pad.
       </p>
 
-      <div className="absolute right-0 bottom-0 px-8">
+      <div className="absolute right-0 bottom-0 px-4 md:px-8">
         <Button
           onClick={handleCustomThemeChange}
           className="cursor-pointer rounded-md px-4 font-bold hover:italic transition-all ease-in-out"
@@ -109,20 +109,20 @@ export function Hero() {
     </div>
   ) : (
     <div
-      className="w-full h-screen flex bg-cover bg-center bg-no-repeat"
+      className="w-full h-screen flex flex-col-reverse md:flex-row bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: "url('/bg.webp')" }}
     >
       <section className="flex items-center px-10 relative">
         <img src="/notes.png" alt="notes" draggable={false} className="select-none" />
         <h1 className="text-6xl font-bold absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-black">P <br />U <br /> Pad</h1>
       </section>
-      <section className="flex items-center justify-center text-secondary">
-        <div className="rounded-lg ml-20 bg-black/20 backdrop-blur-md px-10 py-10 flex flex-col gap-5">
+      <section className="flex items-center justify-center md:text-secondary">
+        <div className="rounded-lg md:ml-20 bg-black/20 backdrop-blur-md p-6 md:p-10 flex flex-col gap-5">
           <div className="space-y-2 text-center">
             <h1 className="text-3xl font-semibold tracking-tight">
               Encrypted Code Pad
             </h1>
-            <p className="text-sm text-muted">
+            <p className="text-sm text-muted-foreground md:text-muted">
               Enter a code to open or create a private, encrypted pad. No account,
               no signup.
             </p>
@@ -160,7 +160,7 @@ export function Hero() {
           </p>
         </div>
       </section>
-      <div className="absolute right-0 bottom-0 px-8">
+      <div className="absolute right-0 bottom-0 px-4 md:px-8">
         <Button
           onClick={handleCustomThemeChange}
           className={cn("cursor-pointer rounded-md px-4 font-bold hover:italic transition-all ease-in-out", customTheme ? "text-white" : "text-black")}
