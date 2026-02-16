@@ -154,7 +154,7 @@ export function Hero() {
             {isPending ? "Opening..." : "Open pad"}
           </Button>
 
-          <p className="text-xs text-muted-foreground text-center">
+          <p className="text-xs text-muted/50 dark:text-muted text-center">
             The server never sees your code or decrypted content. Lose the code,
             lose the pad.
           </p>
