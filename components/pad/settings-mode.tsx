@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Switch } from "@/components/ui/switch";
 import { Calendar } from "@/components/ui/calendar";
+import { hashCodeIdentifier } from "@/lib/crypto";
 
 type Props = {
   pad: PadRecord | null;
@@ -42,6 +43,7 @@ export function SettingsMode({
       : "12:00"
   );
   const { toast } = useToast();
+
 
   const handleSelfDestructSave = async () => {
     if (!pad) return;
@@ -215,20 +217,37 @@ export function SettingsMode({
 
         <Field orientation="responsive">
           <FieldLabel>Pad lock</FieldLabel>
-          <div className="flex flex-col gap-2">
-            <FieldDescription>
-              Optional second code that adds an extra encryption layer. Lose
-              this lock code and you will not be able to decrypt the pad.
-            </FieldDescription>
-            <Input
-              type="password"
-              autoComplete="off"
-              placeholder="Optional second code"
-              value={lockCode ?? ""}
-              onChange={(e) =>
-                onLockCodeChange(e.target.value ? e.target.value : null)
-              }
-            />
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-3">
+              <Switch
+                checked={!!lockCode}
+                onCheckedChange={(checked) => {
+                  if (!checked) {
+                    onLockCodeChange(null);
+                  } else {
+                    onLockCodeChange("");
+                  }
+                }}
+              />
+              <FieldDescription>
+                Enable an extra layer of encryption with a second code.
+              </FieldDescription>
+            </div>
+            {lockCode !== null && (
+              <div className="flex flex-col gap-2">
+                <Input
+                  type="password"
+                  autoComplete="off"
+                  placeholder="Enter second code"
+                  value={lockCode}
+                  onChange={(e) => onLockCodeChange(e.target.value)}
+                />
+                <p className="text-[11px] text-muted-foreground">
+                  This code will be used to further encrypt your pad. You must
+                  save the pad for this change to take effect.
+                </p>
+              </div>
+            )}
           </div>
         </Field>
 

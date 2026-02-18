@@ -17,13 +17,40 @@ export function Hero() {
   const router = useRouter();
   const { toast } = useToast();
 
+  const [secondCode, setSecondCode] = useState("");
+  const [isLocked, setIsLocked] = useState(false);
+
   async function handleOpen() {
     if (!code.trim()) return;
     try {
       const padHash = await hashCodeIdentifier(code.trim());
 
+      // Check if pad exists and is locked
+      const res = await fetch("/api/pad/lookup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ padHash }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.status === "found" && data.pad.isLocked && !secondCode) {
+          setIsLocked(true);
+          toast({
+            title: "Pad Locked",
+            description: "This pad requires a second code to open.",
+          });
+          return;
+        }
+      }
+
       sessionStorage.setItem("pu-pad-code", code.trim());
       sessionStorage.setItem("pu-pad-hash", padHash);
+      if (secondCode) {
+        sessionStorage.setItem("pu-pad-lock-code", secondCode);
+      } else {
+        sessionStorage.removeItem("pu-pad-lock-code");
+      }
 
       startTransition(() => {
         router.push("/pad");
@@ -83,12 +110,33 @@ export function Hero() {
         />
       </div>
 
+      {isLocked && (
+        <div className="space-y-2">
+          <Label htmlFor="secondCode">Enter second code (Pad Locked)</Label>
+          <Input
+            id="secondCode"
+            autoComplete="off"
+            type="password"
+            placeholder="Your second code"
+            value={secondCode}
+            onChange={(e) => setSecondCode(e.target.value)}
+            disabled={isPending}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleOpen();
+              }
+            }}
+          />
+        </div>
+      )}
+
       <Button
         className="w-full cursor-pointer"
         onClick={handleOpen}
-        disabled={isPending || !code.trim()}
+        disabled={isPending || !code.trim() || (isLocked && !secondCode.trim())}
       >
-        {isPending ? "Opening..." : "Open pad"}
+        {isPending ? "Opening..." : isLocked ? "Unlock & Open" : "Open pad"}
       </Button>
 
       <p className="text-xs text-muted-foreground text-center">
@@ -146,12 +194,33 @@ export function Hero() {
             />
           </div>
 
+          {isLocked && (
+            <div className="space-y-2">
+              <Label htmlFor="secondCode">Enter second code (Pad Locked)</Label>
+              <Input
+                id="secondCode"
+                autoComplete="off"
+                type="password"
+                placeholder="Your second code"
+                value={secondCode}
+                onChange={(e) => setSecondCode(e.target.value)}
+                disabled={isPending}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleOpen();
+                  }
+                }}
+              />
+            </div>
+          )}
+
           <Button
             className="w-full cursor-pointer"
             onClick={handleOpen}
-            disabled={isPending || !code.trim()}
+            disabled={isPending || !code.trim() || (isLocked && !secondCode.trim())}
           >
-            {isPending ? "Opening..." : "Open pad"}
+            {isPending ? "Opening..." : isLocked ? "Unlock & Open" : "Open pad"}
           </Button>
 
           <p className="text-xs text-muted/50 dark:text-muted text-center">

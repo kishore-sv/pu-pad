@@ -198,11 +198,10 @@ export function PadShell({
       setSavingState("saving");
       try {
         const primaryKey = await deriveAesKeyFromCode(code, pad.salt);
-        const lk = pad.isLocked && lockCode ? lockCode : undefined;
-        const lockKey =
-          pad.isLocked && lk
-            ? await deriveAesKeyFromCode(lk, pad.salt)
-            : undefined;
+        const lk = lockCode || undefined;
+        const lockKey = lk
+          ? await deriveAesKeyFromCode(lk, pad.salt)
+          : undefined;
 
         const { payload, isLocked } = await encryptWithOptionalLock({
           plaintext: nextContent,
@@ -257,6 +256,7 @@ export function PadShell({
         if (opts?.closeAfter) {
           window.sessionStorage.removeItem("pu-pad-code");
           window.sessionStorage.removeItem("pu-pad-hash");
+          window.sessionStorage.removeItem("pu-pad-lock-code");
           window.location.href = "/";
         }
       } catch (error) {

@@ -18,6 +18,7 @@ export default function PadPage() {
   useEffect(() => {
     const storedCode = sessionStorage.getItem("pu-pad-code");
     const storedHash = sessionStorage.getItem("pu-pad-hash");
+    const storedLockCode = sessionStorage.getItem("pu-pad-lock-code");
 
     if (!storedCode || !storedHash) {
       toast({
@@ -31,6 +32,7 @@ export default function PadPage() {
 
     setCode(storedCode);
     setPadHash(storedHash);
+    setLockCode(storedLockCode);
 
     async function loadPad() {
       setStatus("loading");
