@@ -18,6 +18,7 @@ import { WriteMode } from "./write-mode";
 import { ReadMode } from "./read-mode";
 import { SettingsMode } from "./settings-mode";
 import { ThemeToggle } from "../toggle-theme";
+import { IconRefresh } from "@tabler/icons-react";
 
 
 type Props = {
@@ -394,6 +395,7 @@ export function PadShell({
               disabled={savingState === "saving"}
               onClick={() => window.location.reload()}
             >
+              <IconRefresh />
               Refresh
               <span className="ml-2 text-[10px] text-muted-foreground">
                 ⌥⇧R / Alt+F5
