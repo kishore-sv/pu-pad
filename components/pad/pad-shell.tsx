@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import type { PadRecord, RevisionRecord } from "@/lib/types/pad";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -38,9 +38,19 @@ export function PadShell({
   lockCode,
   onLockCodeChange,
 }: Props) {
-  const [activeTab, setActiveTab] = useState<"write" | "read" | "settings">(
-    "write"
-  );
+  const [activeTab, setActiveTab] = useState<"write" | "read" | "settings">(() => {
+    if (typeof window !== "undefined") {
+      const saved = sessionStorage.getItem("pu-pad-active-tab");
+      if (saved === "write" || saved === "read" || saved === "settings") {
+        return saved;
+      }
+    }
+    return "write";
+  });
+
+  useEffect(() => {
+    sessionStorage.setItem("pu-pad-active-tab", activeTab);
+  }, [activeTab]);
   const [pad, setPad] = useState<PadRecord | null>(initialPad);
   const [content, setContent] = useState<string>("");
   const [wordCount, setWordCount] = useState<number>(initialPad?.wordCount ?? 0);
@@ -52,6 +62,7 @@ export function PadShell({
     initialPad?.updatedAt ?? null
   );
   const { toast } = useToast();
+  const contentRef = useRef<string>("");
 
   const countWords = useCallback((text: string): number => {
     const trimmed = text.trim();
@@ -59,10 +70,14 @@ export function PadShell({
     return trimmed.split(/\s+/).length;
   }, []);
 
-  const loadOrCreatePad = useCallback(async () => {
-    setIsInitializing(true);
+  const loadOrCreatePad = useCallback(async (isRefresh = false) => {
+    const isFirstLoad = !contentRef.current;
+    if (isFirstLoad || isRefresh) {
+      setIsInitializing(true);
+    }
+
     try {
-      if (!pad) {
+      if (!pad && !isRefresh) {
         const salt = generateSalt(16);
         const primaryKey = await deriveAesKeyFromCode(code, salt);
         const { payload, isLocked } = await encryptWithOptionalLock({
@@ -91,6 +106,7 @@ export function PadShell({
         const created: PadRecord = await res.json();
         setPad(created);
         setContent("");
+        contentRef.current = "";
         setWordCount(0);
         setLastSavedAt(created.updatedAt);
         toast({
@@ -98,26 +114,48 @@ export function PadShell({
           description: "Your encrypted pad is ready.",
         });
       } else {
-        const primaryKey = await deriveAesKeyFromCode(code, pad.salt);
-        const lk = pad.isLocked && lockCode ? lockCode : undefined;
+        // For refresh, we need to fetch the latest pad first
+        let currentPad = pad;
+        if (isRefresh) {
+          const res = await fetch("/api/pad/lookup", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ padHash }),
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.status === "found") {
+              currentPad = data.pad;
+              setPad(data.pad);
+            }
+          }
+        }
+
+        if (!currentPad) return;
+
+        const primaryKey = await deriveAesKeyFromCode(code, currentPad.salt);
+        const lk = currentPad.isLocked && lockCode ? lockCode : undefined;
         const lockKey =
-          pad.isLocked && lk
-            ? await deriveAesKeyFromCode(lk, pad.salt)
+          currentPad.isLocked && lk
+            ? await deriveAesKeyFromCode(lk, currentPad.salt)
             : undefined;
 
         const text = await decryptWithOptionalLock({
           payload: {
-            ciphertext: pad.encryptedContent,
-            iv: pad.iv,
-            authTag: pad.authTag,
+            ciphertext: currentPad.encryptedContent,
+            iv: currentPad.iv,
+            authTag: currentPad.authTag,
           },
           primaryKey,
-          isLocked: pad.isLocked,
+          isLocked: currentPad.isLocked,
           lockKey,
         });
 
-        setContent(text);
-        setWordCount(countWords(text));
+        if (text !== contentRef.current) {
+          setContent(text);
+          contentRef.current = text;
+          setWordCount(countWords(text));
+        }
       }
     } catch (error) {
       console.error(error);
@@ -132,7 +170,9 @@ export function PadShell({
   }, [pad, padHash, code, lockCode, countWords, toast]);
 
   useEffect(() => {
-    loadOrCreatePad();
+    if (!contentRef.current) {
+      loadOrCreatePad();
+    }
   }, [loadOrCreatePad]);
 
   const debouncedSave = useDebouncedCallback(async (nextContent: string) => {
@@ -269,7 +309,7 @@ export function PadShell({
         save(content, { isAuto: false, closeAfter: true });
       } else if (!cmd && alt && (e.key === "F5" || (isMac && e.shiftKey && key === "r"))) {
         e.preventDefault();
-        window.location.reload();
+        loadOrCreatePad(true);
       } else if (e.key === "Escape") {
         e.preventDefault();
         window.location.href = "/";
@@ -282,6 +322,7 @@ export function PadShell({
 
   const handleContentChange = (value: string) => {
     setContent(value);
+    contentRef.current = value;
     setWordCount(countWords(value));
     debouncedSave(value);
   };
@@ -393,9 +434,9 @@ export function PadShell({
               className="cursor-pointer"
               variant="ghost"
               disabled={savingState === "saving"}
-              onClick={() => window.location.reload()}
+              onClick={() => loadOrCreatePad(true)}
             >
-              <IconRefresh />
+              <IconRefresh className={isInitializing ? "animate-spin" : ""} />
               Refresh
               <span className="ml-2 text-[10px] text-muted-foreground">
                 ⌥⇧R / Alt+F5

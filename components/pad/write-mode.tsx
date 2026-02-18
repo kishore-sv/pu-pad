@@ -35,7 +35,7 @@ export function WriteMode({
     };
   }, []);
 
-  if (isInitializing) {
+  if (isInitializing && !value) {
     return (
       <div className="mt-4 h-64 w-full animate-pulse bg-muted" />
     );

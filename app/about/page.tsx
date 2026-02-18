@@ -35,7 +35,7 @@ export default function AboutPage() {
                 </p>
             </section>
 
-            {/* Features Grid */}
+
             <section className="grid gap-6 md:grid-cols-2">
                 <Card>
                     <CardHeader className="flex flex-row items-center gap-4">
@@ -83,7 +83,7 @@ export default function AboutPage() {
                 </Card>
             </section>
 
-            {/* Footer */}
+
             <div className="mt-20 text-sm text-muted-foreground">
                 Built by <Link target="_blank" href="https://kishore-sv.me" className="hover:text-primary underline underline-offset-2 transition-all ease-in-out">{siteConfig.author}</Link>.
                 Privacy is a feature, not a marketing line.
