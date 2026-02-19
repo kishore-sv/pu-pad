@@ -9,6 +9,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { hashCodeIdentifier } from "@/lib/crypto";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import Link from "next/link";
 
 export function Hero() {
   const [code, setCode] = useState("");
@@ -154,10 +155,13 @@ export function Hero() {
           D
         </Button>
       </div>
+      <Button variant="link" className="absolute cursor-pointer left-0 bottom-0">
+        <Link href="/about">About</Link>
+      </Button>
     </div>
   ) : (
     <div
-      className="w-full h-screen flex flex-col-reverse md:flex-row bg-cover bg-center bg-no-repeat"
+      className="w-full h-screen fixed flex flex-col-reverse md:flex-row bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: "url('/bg.webp')" }}
     >
       <section className="flex items-center px-10 relative">
@@ -239,6 +243,9 @@ export function Hero() {
           D
         </Button>
       </div>
+      <Button variant="link" className="absolute text-black cursor-pointer left-2 bottom-0 z-50">
+        <Link href="/about">About</Link>
+      </Button>
     </div>
   );
 

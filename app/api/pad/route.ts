@@ -41,18 +41,27 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Pad already exists." }, { status: 409 });
     }
 
-    const [inserted] = await db
-      .insert(pads)
-      .values({
-        padHash: data.padHash,
-        encryptedContent: data.encryptedContent,
-        salt: data.salt,
-        iv: data.iv,
-        authTag: data.authTag,
-        wordCount: data.wordCount,
-        isLocked: data.isLocked,
-      })
-      .returning();
+    let inserted;
+    try {
+      [inserted] = await db
+        .insert(pads)
+        .values({
+          padHash: data.padHash,
+          encryptedContent: data.encryptedContent,
+          salt: data.salt,
+          iv: data.iv,
+          authTag: data.authTag,
+          wordCount: data.wordCount,
+          isLocked: data.isLocked,
+        })
+        .returning();
+    } catch (e: any) {
+      // Check for unique key violation (Postgres code 23505)
+      if (e?.code === "23505" || e?.message?.includes("unique constraint")) {
+        return NextResponse.json({ error: "Pad already exists." }, { status: 409 });
+      }
+      throw e;
+    }
 
     return NextResponse.json(
       {

@@ -173,7 +173,7 @@ const CustomComponents: any = {
     return (
       <code
         className={cn(
-          isInline ? "relative rounded-xl bg-muted px-[0.3rem] py-[0.1rem] font-mono text-[0.85rem] font-medium" : "font-mono rounded-md text-sm",
+          isInline ? "relative rounded-md bg-muted px-[0.3rem] py-[0.1rem] font-mono text-[0.85rem] font-medium" : "font-mono selection:text-primary-foreground dark:selection:text-foreground rounded-md text-sm",
           className
         )}
         {...props}

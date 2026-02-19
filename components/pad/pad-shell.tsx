@@ -63,6 +63,7 @@ export function PadShell({
   );
   const { toast } = useToast();
   const contentRef = useRef<string>("");
+  const initializationStartedRef = useRef(false);
 
   const countWords = useCallback((text: string): number => {
     const trimmed = text.trim();
@@ -98,6 +99,12 @@ export function PadShell({
             isLocked,
           }),
         });
+
+        if (res.status === 409) {
+          // If collision happened between lookup and create, try to load it instead
+          initializationStartedRef.current = false;
+          return loadOrCreatePad(true);
+        }
 
         if (!res.ok) {
           throw new Error("Failed to create pad");
@@ -170,7 +177,8 @@ export function PadShell({
   }, [pad, padHash, code, lockCode, countWords, toast]);
 
   useEffect(() => {
-    if (!contentRef.current) {
+    if (!initializationStartedRef.current) {
+      initializationStartedRef.current = true;
       loadOrCreatePad();
     }
   }, [loadOrCreatePad]);
