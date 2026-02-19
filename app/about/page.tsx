@@ -3,8 +3,10 @@ import { Metadata } from "next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { siteConfig } from "@/lib/site-config";
-import { IconClock, IconEyeOff, IconLock, IconShield } from "@tabler/icons-react";
+import { IconClock, IconDeviceSpeaker, IconEyeOff, IconLock, IconShield, IconVolume } from "@tabler/icons-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import SpeakerButton from "@/components/speak-button";
 
 export const metadata: Metadata = {
     title: "About",
@@ -15,8 +17,8 @@ export default function AboutPage() {
     return (
         <div className="container mx-auto max-w-4xl max-h-screen px-6 py-16">
             <div className="mb-12 space-y-4">
-                <h1 className="text-4xl font-bold tracking-tight">
-                    About {siteConfig.name}
+                <h1 className="text-4xl font-bold tracking-tight flex gap-4 items-center">
+                    About {siteConfig.name} <SpeakerButton />
                 </h1>
                 <p className="text-muted-foreground text-lg">
                     A privacy-first, zero-knowledge encrypted notes application.
