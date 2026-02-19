@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Switch } from "@/components/ui/switch";
 import { Calendar } from "@/components/ui/calendar";
+import { Badge } from "@/components/ui/badge";
 import { hashCodeIdentifier } from "@/lib/crypto";
 
 type Props = {
@@ -37,13 +38,18 @@ export function SettingsMode({
   const [selfDestructDate, setSelfDestructDate] = useState<Date | undefined>(
     pad?.selfDestructAt ? new Date(pad.selfDestructAt) : undefined
   );
-  const [selfDestructTime, setSelfDestructTime] = useState<string>(
-    pad?.selfDestructAt
-      ? new Date(pad.selfDestructAt).toISOString().slice(11, 16)
-      : "12:00"
-  );
-  const { toast } = useToast();
 
+  // Get initial local time for the input
+  const getInitialTime = () => {
+    if (!pad?.selfDestructAt) return "12:00";
+    const date = new Date(pad.selfDestructAt);
+    return `${String(date.getHours()).padStart(2, "0")}:${String(
+      date.getMinutes()
+    ).padStart(2, "0")}`;
+  };
+
+  const [selfDestructTime, setSelfDestructTime] = useState<string>(getInitialTime());
+  const { toast } = useToast();
 
   const handleSelfDestructSave = async () => {
     if (!pad) return;
@@ -53,10 +59,10 @@ export function SettingsMode({
         const [hoursStr, minutesStr] = selfDestructTime.split(":");
         const hours = Number(hoursStr ?? "0");
         const minutes = Number(minutesStr ?? "0");
+
+        // Create date in local time
         const date = new Date(selfDestructDate);
-        if (!Number.isNaN(hours) && !Number.isNaN(minutes)) {
-          date.setHours(hours, minutes, 0, 0);
-        }
+        date.setHours(hours, minutes, 0, 0);
         nextDate = date.toISOString();
       }
 
@@ -81,7 +87,9 @@ export function SettingsMode({
 
       toast({
         title: "Updated",
-        description: "Self destruct settings updated.",
+        description: nextDate
+          ? `Pad will self-destruct on ${new Date(nextDate).toLocaleString()}`
+          : "Self destruct disabled.",
       });
     } catch (error) {
       console.error(error);
@@ -175,41 +183,116 @@ export function SettingsMode({
       <FieldGroup>
         <Field orientation="responsive">
           <FieldLabel>Self destruct</FieldLabel>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3">
               <Switch
                 checked={selfDestructEnabled}
-                onCheckedChange={(checked) => setSelfDestructEnabled(!!checked)}
+                onCheckedChange={(checked) => {
+                  setSelfDestructEnabled(!!checked);
+                  // If disabling, save immediately to clear it
+                  if (!checked) {
+                    // We need to wait for state to update or use a direct call
+                    // For simplicity, we'll let the user click save
+                  }
+                }}
               />
               <FieldDescription>
                 Automatically delete this pad and all revisions at a specific
                 time.
               </FieldDescription>
             </div>
+
             {selfDestructEnabled && (
-              <div className="flex max-w-md flex-col gap-3">
-                <Calendar
-                  mode="single"
-                  selected={selfDestructDate}
-                  onSelect={setSelfDestructDate}
-                  disabled={(date) => date < new Date()}
-                />
-                <div className="flex items-center gap-2">
-                  <Input
-                    type="time"
-                    className="w-28"
-                    value={selfDestructTime}
-                    onChange={(e) => setSelfDestructTime(e.target.value)}
+              <div className="flex flex-col md:flex-row items-start gap-8 rounded-lg border bg-muted/20 p-6 shadow-sm">
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                      1. Select Expiry Date
+                    </span>
+                    {selfDestructDate && (
+                      <Badge variant="outline" className="text-[10px] font-mono">
+                        {selfDestructDate.toLocaleDateString()}
+                      </Badge>
+                    )}
+                  </div>
+                  <Calendar
+                    mode="single"
+                    selected={selfDestructDate}
+                    onSelect={setSelfDestructDate}
+                    disabled={(date) => {
+                      const today = new Date();
+                      today.setHours(0, 0, 0, 0);
+                      return date < today;
+                    }}
+                    className="rounded-none border bg-background shadow-inner"
                   />
-                  <Button
-                    size="sm"
-                    className="self-start cursor-pointer"
-                    onClick={handleSelfDestructSave}
-                    disabled={!pad || !selfDestructDate}
-                  >
-                    Save self destruct
-                  </Button>
                 </div>
+
+                <div className="flex flex-col gap-6 w-full md:max-w-[240px]">
+                  <div className="flex flex-col gap-3">
+                    <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                      2. Set Time
+                    </span>
+                    <div className="relative">
+                      <Input
+                        type="time"
+                        className="w-full bg-background h-10 px-3 font-mono"
+                        value={selfDestructTime}
+                        onChange={(e) => setSelfDestructTime(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-4 mt-auto">
+                    <div className="rounded border border-primary/20 bg-primary/5 p-3 space-y-1">
+                      <span className="text-[10px] font-bold text-primary uppercase tracking-tighter">
+                        Scheduled Destruction
+                      </span>
+                      <p className="text-xs font-medium">
+                        {selfDestructDate ? (
+                          <>
+                            {new Date(
+                              new Date(selfDestructDate).setHours(
+                                Number(selfDestructTime.split(":")[0]),
+                                Number(selfDestructTime.split(":")[1])
+                              )
+                            ).toLocaleString(undefined, {
+                              dateStyle: 'medium',
+                              timeStyle: 'short'
+                            })}
+                          </>
+                        ) : (
+                          <span className="text-muted-foreground italic">Select a date above</span>
+                        )}
+                      </p>
+                    </div>
+
+                    <Button
+                      size="lg"
+                      className="w-full cursor-pointer font-bold tracking-tight shadow-md"
+                      onClick={handleSelfDestructSave}
+                      disabled={!pad || (selfDestructEnabled && !selfDestructDate)}
+                    >
+                      Confirm Expiry
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {!selfDestructEnabled && pad?.selfDestructAt && (
+              <div className="flex items-center gap-4 rounded-lg bg-destructive/10 p-4 border border-destructive/20">
+                <p className="text-xs text-destructive font-medium flex-1">
+                  Destruction is currently active for {new Date(pad.selfDestructAt).toLocaleString()}.
+                </p>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  className="cursor-pointer"
+                  onClick={handleSelfDestructSave}
+                >
+                  Disable Now
+                </Button>
               </div>
             )}
           </div>
