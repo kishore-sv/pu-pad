@@ -23,80 +23,66 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://pupad.kishore-sv.me"),
 
   title: {
-    default: "PU Pad - Encrypted Code-Based Notes",
-    template: "%s | PU Pad",
+    default: "PU Pad (PUPAD) - Private Encrypted Notes by Kishore",
+    template: "%s | PU Pad (PUPAD)",
   },
 
   description:
-    "Zero-knowledge encrypted notes using only a single code. No accounts. No tracking. Fully encrypted in your browser.",
+    "PU Pad (PUPAD) is a zero-knowledge encrypted notes app by Kishore. No accounts. No tracking. Fully encrypted in your browser. Private, code-based secure notes.",
 
   keywords: [
-    "pu pad",
     "PU Pad",
+    "PUPAD",
+    "pu pad",
+    "pupad",
+    "pu pad kishore",
+    "pupad kishore",
+    "PU Pad by Kishore",
     "encrypted notes",
     "secure notes app",
     "zero knowledge notes",
-    "end to end encrypted notes",
     "private markdown editor",
-    "no login notes",
-    "self destruct notes",
-    "password protected notes",
     "anonymous notepad",
-    "secure online notepad",
-    "code protected notes",
-    "private note sharing",
+    "secure online notepad"
   ],
+
   authors: [
     {
-      name: "PU Pad",
-      url: "https://pupad.kishore-sv.me",
+      name: "Kishore",
+      url: "https://kishore-sv.me",
     },
   ],
 
-  creator: "PU Pad",
+  creator: "Kishore",
   publisher: "PU Pad",
 
   robots: {
     index: true,
     follow: true,
-    nocache: false,
-  },
-
-  icons: {
-    icon: [
-      { url: "/favicon.ico" },
-      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-      { url: "/android-chrome-192x192.png", sizes: "192x192", type: "image/png" },
-      { url: "/android-chrome-512x512.png", sizes: "512x512", type: "image/png" },
-    ],
-    apple: [
-      { url: "/apple-touch-icon.png", sizes: "180x180" },
-    ],
   },
 
   openGraph: {
     type: "website",
     url: "https://pupad.kishore-sv.me",
-    title: "PU Pad - Encrypted Code-Based Notes",
+    title: "PU Pad (PUPAD) - Encrypted Code-Based Notes",
     description:
-      "Secure, zero-knowledge encrypted notes using only a single code. No login required.",
+      "PU Pad (PUPAD) is a privacy-first encrypted notes app by Kishore. No login required. Zero knowledge architecture.",
     siteName: "PU Pad",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "PU Pad - Encrypted Code-Based Notes",
+        alt: "PU Pad (PUPAD) Encrypted Notes",
       },
     ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "PU Pad - Encrypted Code-Based Notes",
+    title: "PU Pad (PUPAD) - Encrypted Notes by Kishore",
     description:
-      "Private, encrypted notes using only a code. Zero knowledge architecture.",
+      "Private encrypted notes app built by Kishore. No accounts. Zero knowledge.",
     images: ["/og-image.png"],
   },
 
@@ -106,6 +92,7 @@ export const metadata: Metadata = {
 
   category: "technology",
 };
+
 
 
 export default function RootLayout({
@@ -138,15 +125,25 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebApplication",
-              "name": siteConfig.name,
-              "description": siteConfig.description,
-              "url": siteConfig.url,
-              "applicationCategory": "BusinessApplication",
+              "name": "PU Pad",
+              "alternateName": ["PUPAD", "pu pad", "pupad"],
+              "url": "https://pupad.kishore-sv.me",
+              "description":
+                "PU Pad (PUPAD) is a zero-knowledge encrypted notes application built by Kishore. Fully encrypted in the browser with no login required.",
+              "applicationCategory": "ProductivityApplication",
               "operatingSystem": "All",
+              "creator": {
+                "@type": "Person",
+                "name": "Kishore",
+                "url": "https://kishore-sv.me"
+              },
               "author": {
                 "@type": "Person",
-                "name": siteConfig.author,
-                "url": "https://kishore-sv.me"
+                "name": "Kishore"
+              },
+              "brand": {
+                "@type": "Brand",
+                "name": "PU Pad"
               },
               "offers": {
                 "@type": "Offer",

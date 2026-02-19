@@ -3,9 +3,8 @@ import { Metadata } from "next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { siteConfig } from "@/lib/site-config";
-import { IconClock, IconDeviceSpeaker, IconEyeOff, IconLock, IconShield, IconVolume } from "@tabler/icons-react";
+import { IconClock, IconEyeOff, IconLock, IconShield, IconVolume } from "@tabler/icons-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import SpeakerButton from "@/components/speak-button";
 
 export const metadata: Metadata = {
