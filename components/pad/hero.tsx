@@ -155,8 +155,12 @@ export function Hero() {
           D
         </Button>
       </div>
+
       <Button variant="link" className="absolute cursor-pointer left-0 bottom-0">
         <Link href="/about">About</Link>
+      </Button>
+      <Button variant="link" className="absolute cursor-pointer left-0 bottom-0">
+        <Link href="/blog">Blog</Link>
       </Button>
     </div>
   ) : (
@@ -243,9 +247,14 @@ export function Hero() {
           D
         </Button>
       </div>
-      <Button variant="link" className="absolute text-black cursor-pointer left-2 bottom-0 z-50">
-        <Link href="/about">About</Link>
-      </Button>
+      <div className="flex flex-col h-fit items-center justify-between">
+        <Button variant="link" className="absolute text-black cursor-pointer left-2 bottom-0 z-50">
+          <Link href="/about">About</Link>
+        </Button>
+        <Button variant="link" className="absolute text-black cursor-pointer left-2 bottom-0 z-50">
+          <Link href="/blog">Blog</Link>
+        </Button>
+      </div>
     </div>
   );
 
